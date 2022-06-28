@@ -1,27 +1,24 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
-from songs.models import CreateAndUpdateField
+from core.models import AuditModelMixin
 
 
-class Queue(CreateAndUpdateField):
+class Queue(AuditModelMixin):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = "Queues"
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.user}'
+        return f'Songs Queue of {self.user}'
 
 
-class SongQueue(CreateAndUpdateField):
+class SongQueue(AuditModelMixin):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    queue = models.ForeignKey('Queue', on_delete=models.CASCADE)
     song = models.ForeignKey('songs.Song', on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name_plural = "Songs Queue"
+        verbose_name_plural = "Songs in Queues"
 
     def __str__(self):
-        return f'{self.user}'
+        return f'Queue: {self.queue} contains: {self.song}'

@@ -1,29 +1,25 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
 
-from songs.models import CreateAndUpdateField, Song
+from core.models import AuditModelMixin
 
 
-class Playlist(CreateAndUpdateField):
+class Playlist(AuditModelMixin):
 
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = "Playlists"
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Playlist: {self.name} User: {self.user}'
+        return f'{self.name}'
 
 
-class SongPlaylist(CreateAndUpdateField):
+class SongPlaylist(AuditModelMixin):
 
     playlist = models.ForeignKey('Playlist', on_delete=models.CASCADE)
     song = models.ForeignKey('songs.Song', on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name_plural = "Songs playlist"
+        verbose_name_plural = "Songs in playlists"
 
     def __str__(self):
-        return f'Playlist: {self.playlist.name} contains: {self.song}'
-
+        return f'Playlist: {self.playlist} contains: {self.song}'
