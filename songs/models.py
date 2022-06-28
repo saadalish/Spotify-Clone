@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.db import models
 
 from core.models import AuditModelMixin
@@ -33,7 +32,7 @@ class SongArtist(AuditModelMixin):
 class Album(AuditModelMixin):
 
     name = models.CharField(max_length=50)
-    thumbnail = models.ImageField(storage=FileSystemStorage(location='/media/album_thumbnails'))
+    thumbnail = models.ImageField(upload_to='uploads/album_thumbnails')
     publishing_house = models.CharField(max_length=255, null=True)
 
     def __str__(self):
