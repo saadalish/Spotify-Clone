@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        {% if playlists %}
+            <H3>My Playlists</H3>
+            {% for playlist in playlists %}.
+            {{ playlist.name }}<br/>
+            <hr/>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
