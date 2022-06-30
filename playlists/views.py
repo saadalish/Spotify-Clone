@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.urls import reverse
 
 from .forms import PlaylistForm
 from .models import Playlist, SongPlaylist
@@ -25,13 +26,16 @@ def create(request):
 
 def update(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id)
-    form = PlaylistForm(request.POST or None, instance=playlist)
-    songs_in_playlist = SongPlaylist.objects.filter(playlist__exact=playlist).values_list('song_id', flat=True)
-    recommended_songs = Song.objects.exclude(id__in=songs_in_playlist)
+    songs_in_playlist = SongPlaylist.objects.filter(playlist=playlist).values_list('song_id', flat=True)
+    recommended_songs = Song.objects.exclude(id__in=songs_in_playlist)[:10]
     playlist_songs = Song.objects.filter(id__in=songs_in_playlist)
-    if form.is_valid():
-        form.save()
-        return HttpResponseRedirect("/playlists")
+    if request.method == "POST":
+        form = PlaylistForm(request.POST, instance=playlist)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        form = PlaylistForm(None, instance=playlist)
     context = {
         "form": form,
         "playlist": playlist,
@@ -44,21 +48,23 @@ def update(request, playlist_id):
 def delete(request, playlist_id):
     playlist = get_object_or_404(Playlist, id=playlist_id)
     playlist.delete()
-    return HttpResponseRedirect("/playlists")
+    return HttpResponseRedirect(reverse('index'))
 
 
-def add_song(request, playlist, song):
-    playlist = Playlist.objects.get(name=playlist)
-    song = Song.objects.get(title=song)
+def add_song(request, playlist_id, song_id):
+    playlist = Playlist.objects.get(id=playlist_id)
+    song = Song.objects.get(id=song_id)
     SongPlaylist.objects.create(playlist=playlist, song=song)
-    return HttpResponseRedirect(f"/playlists/{playlist.id}")
+    # return HttpResponseRedirect(f"/playlists/{playlist.id}")
+    # return HttpResponseRedirect(reverse('index'))
+    return HttpResponseRedirect(reverse('update', args=[playlist_id]))
 
 
-def remove_song_from_playlist(request, playlist, song):
-    playlist = Playlist.objects.get(name=playlist)
-    song = Song.objects.get(title=song)
+def remove_song_from_playlist(request, playlist_id, song_id):
+    playlist = Playlist.objects.get(id=playlist_id)
+    song = Song.objects.get(id=song_id)
     SongPlaylist.objects.filter(playlist=playlist, song=song).delete()
-    return HttpResponseRedirect(f"/playlists/{playlist.id}")
+    return HttpResponseRedirect(reverse('update', args=[playlist_id]))
 
 
 

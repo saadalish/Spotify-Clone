@@ -29,7 +29,7 @@
             <td>{{ song.title }}</td>
             <td>{{ song.type }}</td>
             <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'RemoveSongPlaylist' playlist song %}>remove</a></td>
+            <td><a href={% url 'remove_song_from_playlist' playlist.id song.id %}>remove</a></td>
         </tr>
     {% endfor %}
     </table>
@@ -50,7 +50,7 @@
             <td>{{ song.title }}</td>
             <td>{{ song.type }}</td>
             <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'AddSongPlaylist' playlist song %}>Add</a></td>
+            <td><a href={% url 'add_song_to_playlist' playlist.id song.id %}>Add</a></td>
         </tr>
     {% endfor %}
     </table>

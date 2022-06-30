@@ -12,6 +12,8 @@
                 <a href="{% url 'update' playlist.id %}">{{ playlist.name }}</a>
             <hr/>
             {% endfor %}
+        {% else %}
+            <p>No Playlist Added yet</p>
         {% endif %}
     </div>
 </body>
