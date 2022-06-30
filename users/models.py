@@ -1,13 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class Artist(models.Model):
+class User(AbstractUser):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name_plural = "Artists"
+    is_artist = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user}'
+        return f'{self.first_name} {self.last_name}'

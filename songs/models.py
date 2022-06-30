@@ -1,18 +1,10 @@
+from django.conf import settings
 from django.db import models
 
-from users.models import Artist
+from core.models import AuditModelMixin
 
 
-class CreateAndUpdateField(models.Model):
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        abstract = True
-
-
-class Song(CreateAndUpdateField):
+class Song(AuditModelMixin):
 
     title = models.CharField(max_length=100)
     SONG_TYPE_CHOICES = [
@@ -21,47 +13,40 @@ class Song(CreateAndUpdateField):
     ]
     type = models.CharField(max_length=10, choices=SONG_TYPE_CHOICES)
     album = models.ForeignKey('Album', on_delete=models.CASCADE, blank=True, null=True)
-    source = models.URLField(max_length=255)
-    details = models.CharField(max_length=255, null=True)
-
-    class Meta:
-        verbose_name_plural = "Songs"
+    file = models.FileField(upload_to='uploads/songs/')
+    publishing_house = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return f'{self.title}'
 
 
-class SongArtist(CreateAndUpdateField):
+class SongArtist(AuditModelMixin):
 
     song = models.ForeignKey('Song', on_delete=models.CASCADE)
-    artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True)
-
-    class Meta:
-        verbose_name_plural = "Song Artists"
+    artist = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.song} has following artists: {self.artist}'
+        return f'Song: {self.song} Artist: {self.artist}'
 
 
-class Album(CreateAndUpdateField):
+class Album(AuditModelMixin):
 
     name = models.CharField(max_length=50)
-
-    class Meta:
-        verbose_name_plural = "Albums"
+    thumbnail = models.ImageField(upload_to='uploads/album_thumbnails')
+    publishing_house = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return f'{self.name}'
 
 
-class AlbumArtist(CreateAndUpdateField):
+class AlbumArtist(AuditModelMixin):
 
     album = models.ForeignKey('Album', on_delete=models.CASCADE)
-    artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True)
-
-    class Meta:
-        verbose_name_plural = "Album Artists"
+    artist = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        limit_choices_to={'is_artist': True},
+        on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
-        return f'{self.album} has following artists: {self.artist}'
-
+        return f'Album: {self.album} Artist: {self.artist}'
