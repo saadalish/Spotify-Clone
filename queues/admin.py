@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import Queue, SongQueue
+from .models import Queue
 
 admin.site.register(Queue)
-admin.site.register(SongQueue)
