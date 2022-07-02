@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        {% if playlists %}
+            <H3>My Playlists</H3>
+            {% for playlist in playlists %}.
+                <a href="{% url 'update' playlist.id %}">{{ playlist.name }}</a>
+            <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No Playlist Added yet</p>
+        {% endif %}
+    </div>
+</body>
+</html>
