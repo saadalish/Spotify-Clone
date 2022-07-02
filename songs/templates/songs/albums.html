@@ -9,8 +9,7 @@
         {% if albums %}
             <H3>My Albums</H3>
             {% for album in albums %}.
-{#                <a href="{% url 'update' playlist.id %}">{{ playlist.name }}</a>#}
-                {{ album }}
+                <a href="{% url 'update_album' album.id %}">{{ album }}</a>
             <hr/>
             {% endfor %}
         {% else %}

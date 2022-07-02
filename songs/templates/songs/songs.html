@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Songs</title>
+</head>
+<body>
+    <div>
+        {% if singles %}
+            <H3>My Songs</H3>
+            {% for single in singles %}.
+                <a href="{% url 'update_song' single.id %}">{{ single }}</a>
+            <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No Song Added yet</p>
+        {% endif %}
+    </div>
+</body>
+</html>
