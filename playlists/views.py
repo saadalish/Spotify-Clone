@@ -7,6 +7,7 @@ from songs.models import Song
 
 
 def index(request):
+
     playlists = Playlist.objects.filter(user=request.user)
     context = {"playlists": playlists}
     return render(request, "playlists/index.html", context)
@@ -19,7 +20,8 @@ def create(request):
             form.instance.user = request.user
             playlist = form.save(commit=False)
             playlist.user = request.user
-            render(request, "playlists/index.html")
+            playlist.save()
+            return HttpResponseRedirect(reverse('home'))
     else:
         form = PlaylistForm()
     context = {'form': form}

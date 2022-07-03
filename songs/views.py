@@ -51,13 +51,21 @@ def delete_song(request, song_id):
     return HttpResponseRedirect(reverse('get_all_singles_of_user'))
 
 
+def get_all_albums(request):
+    albums = Album.objects.all()
+    context = {
+        'albums': albums
+    }
+    return render(request, 'songs/albums.html', context)
+
+
 def get_all_albums_of_user(request):
 
     albums = Album.objects.filter(artists=request.user)
     context = {
         'albums': albums
     }
-    return render(request, 'songs/albums.html', context)
+    return render(request, 'songs/user_albums.html', context)
 
 
 def create_album(request):
@@ -88,6 +96,16 @@ def update_album(request, album_id):
         "songs_in_album": songs_in_album
     }
     return render(request, "songs/update_album.html", context)
+
+
+def view_album(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+    songs_in_album = Song.objects.filter(album_id=album_id)
+    context = {
+        "album": album,
+        "songs_in_album": songs_in_album
+    }
+    return render(request, "songs/view_album.html", context)
 
 
 def delete_album(request, album_id):

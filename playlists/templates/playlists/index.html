@@ -1,20 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <div>
-        {% if playlists %}
-            <H3>My Playlists</H3>
-            {% for playlist in playlists %}.
-                <a href="{% url 'update' playlist.id %}">{{ playlist.name }}</a>
-            <hr/>
+{% block content %}
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">My Playlists</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+      {% if playlists %}
+            {% for playlist in playlists %}
+               <li class="list-group-item"><a href="{% url 'update' playlist.id %}">{{ playlist.name }}</a></li>
             {% endfor %}
-        {% else %}
-            <p>No Playlist Added yet</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+      {% else %}
+          <li class="list-group-item">No Playlist Added yet</li>
+      {% endif %}
+  </ul>
+  <div class="card-body">
+    <a href={% url 'create' %} class="card-link">Create new Playlist</a>
+  </div>
+</div>
+{% endblock %}

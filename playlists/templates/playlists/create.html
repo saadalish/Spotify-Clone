@@ -1,16 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create new Playlist</title>
-</head>
-<body>
-<form method="POST">
+{% extends 'home/bootstrap.html' %}
+{% block content %}
+<div class="card bg-light">
+    <article class="card-body mx-auto" style="max-width: 400px;">
+        <h4 class="card-title mt-3 text-center">Playlists</h4>
+        <p class="text-center">Create your new Playlist</p>
+        <section class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Submit">
+            </form>
 
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <input type="submit" value="Submit">
-</form>
-</body>
-</html>
+        </section>
+    </article>
+</div>
+{% endblock %}

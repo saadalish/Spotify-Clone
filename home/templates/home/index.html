@@ -1,0 +1,22 @@
+{% extends 'home/bootstrap.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                {% include 'songs/albums.html' %}
+            </div>
+            <div class="col-md-3">
+                {% if request.user.is_authenticated %}
+                    {% include 'playlists/index.html' %}
+                    {% if request.user.is_artist %}
+                         {% include 'songs/user_albums.html' %}
+                         {% include 'songs/songs.html' %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+ {% endblock %}

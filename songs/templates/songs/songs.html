@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>All Songs</title>
-</head>
-<body>
-    <div>
-        {% if singles %}
-            <H3>My Songs</H3>
-            {% for single in singles %}.
-                <a href="{% url 'update_song' single.id %}">{{ single }}</a>
-            <hr/>
-            {% endfor %}
-        {% else %}
-            <p>No Song Added yet</p>
-        {% endif %}
+{% block content %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">My Singles</h5>
+      </div>
+      <ul class="list-group list-group-flush">
+          {% if singles %}
+              {% for single in singles %}
+                  <li class="list-group-item"><a href="{% url 'update_song' single.id %}">{{ single }}</a></li>
+              {% endfor %}
+          {% else %}
+              <li class="list-group-item">No Song Added yet</li>
+          {% endif %}
+      </ul>
+      <div class="card-body">
+        <a href={% url 'add_song' %} class="card-link">Add new Song</a>
+      </div>
     </div>
-</body>
-</html>
+{% endblock %}
+
+
