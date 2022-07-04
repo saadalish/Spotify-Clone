@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Albums</title>
+</head>
+<body>
+    <div>
+        {% if albums %}
+            <H3>My Albums</H3>
+            {% for album in albums %}.
+                <a href="{% url 'update_album' album.id %}">{{ album }}</a>
+                 <a href="{% url 'delete_album' album.id %}">Delete Album</a>
+            <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No Album Added yet</p>
+        {% endif %}
+    </div>
+</body>
+</html>
