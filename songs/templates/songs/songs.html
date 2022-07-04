@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Songs</title>
+</head>
+<body>
+    <div>
+        {% if songs %}
+            <H3>My Songs</H3>
+            {% for song in songs %}
+                <div>
+                    <a href="{% url 'update_song' song.id %}">{{ song }}</a>
+                    <a href="{% url 'delete_song' song.id %}">Delete Song</a>
+                </div>
+            <hr/>
+            {% endfor %}
+        {% else %}
+            <p>No Song Added yet</p>
+        {% endif %}
+    </div>
+</body>
+</html>
