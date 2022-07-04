@@ -1,5 +1,4 @@
-{% extends 'home/bootstrap.html' %}
-{% include 'home/navbar.html' %}
+{% extends 'home/base.html' %}
 {% block content %}
 <div class="bg-light">
     <div>
@@ -32,7 +31,6 @@
                             <source src='{{ song.file.url }}' type='audio/mp3'/>
                         </audio>
                     </td>
-{#                    <td><a href={% url 'delete_song_from_album' album_id song.id %}>Delete Song</a></td>#}
                 </tr>
             {% endfor %}
             </table>
@@ -43,5 +41,3 @@
     </div>
 </div>
 {% endblock %}
-
-

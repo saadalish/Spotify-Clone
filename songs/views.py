@@ -6,49 +6,41 @@ from .models import Album
 from songs.models import Song
 
 
-def get_all_singles_of_user(request):
-    singles = Song.objects.filter(artists=request.user, type="Single")
+def get_all_songs(request):
+    songs = Song.objects.filter(artists=request.user, type="Single")
     context = {
-        'singles': singles
+        'songs': songs
     }
     return render(request, 'songs/songs.html', context)
 
 
 def add_song(request):
     if request.method == 'POST':
-        form = SongForm(request.POST, request.FILES, is_album=False)
+        form = SongForm(request.POST, request.FILES)
         if form.is_valid():
-            song = form.save(commit=False)
-            song.type = "Single"
-            song.save()
-            form.save_m2m()
-            return HttpResponseRedirect(reverse('get_all_singles_of_user'))
+            form.instance.type = "Single"
+            form.save()
+            return HttpResponseRedirect(reverse('get_all_songs'))
     else:
-        form = SongForm(is_album=False)
+        form = SongForm()
     context = {'form': form}
-    return render(request, "songs/create_song.html", context)
+    return render(request, "songs/add_song.html", context)
 
 
 def update_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
     if request.method == "POST":
-        form = SongForm(request.POST, request.FILES, is_album=False, instance=song)
+        form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('get_all_singles_of_user'))
+            return HttpResponseRedirect(reverse('get_all_songs'))
     else:
-        form = SongForm(None, is_album=False, instance=song)
+        form = SongForm(None, instance=song)
     context = {
         "form": form,
         "song_id": song_id,
     }
     return render(request, "songs/update_song.html", context)
-
-
-def delete_song(request, song_id):
-    song = Song.objects.get(id=song_id)
-    song.delete()
-    return HttpResponseRedirect(reverse('get_all_singles_of_user'))
 
 
 def get_all_albums(request):
@@ -60,7 +52,6 @@ def get_all_albums(request):
 
 
 def get_all_albums_of_user(request):
-
     albums = Album.objects.filter(artists=request.user)
     context = {
         'albums': albums
@@ -68,7 +59,15 @@ def get_all_albums_of_user(request):
     return render(request, 'songs/user_albums.html', context)
 
 
-def create_album(request):
+def delete_song(request, song_id, album_id=None):
+    song = Song.objects.get(id=song_id)
+    song.delete()
+    if album_id:
+        return HttpResponseRedirect(reverse('update_album', args=[album_id]))
+    return HttpResponseRedirect(reverse('get_all_songs'))
+
+
+def add_album(request):
     if request.method == 'POST':
         form = AlbumForm(request.POST, request.FILES)
         if form.is_valid():
@@ -77,7 +76,7 @@ def create_album(request):
     else:
         form = AlbumForm()
     context = {'form': form}
-    return render(request, "songs/create_album.html", context)
+    return render(request, "songs/add_album.html", context)
 
 
 def update_album(request, album_id):
@@ -116,22 +115,15 @@ def delete_album(request, album_id):
 
 def add_song_to_album(request, album_id):
     if request.method == 'POST':
-        form = SongForm(request.POST, request.FILES, is_album=True)
+        form = SongForm(request.POST, request.FILES)
         if form.is_valid():
-            song = form.save(commit=False)
-            song.type = "Album"
-            song.album_id = album_id
-            song.save()
-            song.artists.set(Album.objects.get(id=album_id).artists.all())
+            form.instance.type = "Album"
+            form.instance.album_id = album_id
+            form.save()
             return HttpResponseRedirect(reverse('update_album', args=[album_id]))
     else:
-        form = SongForm(is_album=True)
+        form = SongForm()
     context = {'form': form}
     return render(request, "songs/create_song.html", context)
 
-
-def delete_song_from_album(request, album_id, song_id):
-    song = Song.objects.get(id=song_id)
-    song.delete()
-    return HttpResponseRedirect(reverse('update_album', args=[album_id]))
 
