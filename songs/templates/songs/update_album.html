@@ -27,7 +27,7 @@
         <tr>
             <td>{{ song.title }}</td>
             <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'delete_song_from_album' album_id song.id %}>Delete Song</a></td>
+            <td><a href={% url 'delete_song' album_id song.id %}>Delete Song</a></td>
         </tr>
     {% endfor %}
     </table>

@@ -12,6 +12,7 @@ def get_all_songs(request):
     context = {
         'songs': songs
     }
+    print(context)
     return render(request, 'songs/songs.html', context)
 
 
@@ -45,9 +46,11 @@ def update_song(request, song_id):
     return render(request, "songs/update_song.html", context)
 
 
-def delete_song(request, song_id):
+def delete_song(request, song_id, album_id=None):
     song = Song.objects.get(id=song_id)
     song.delete()
+    if album_id:
+        return HttpResponseRedirect(reverse('update_album', args=[album_id]))
     return HttpResponseRedirect(reverse('get_all_songs'))
 
 
@@ -109,8 +112,3 @@ def add_song_to_album(request, album_id):
     context = {'form': form}
     return render(request, "songs/add_song.html", context)
 
-
-def delete_song_from_album(request, album_id, song_id):
-    song = Song.objects.get(id=song_id)
-    song.delete()
-    return HttpResponseRedirect(reverse('update_album', args=[album_id]))
