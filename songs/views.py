@@ -12,7 +12,6 @@ def get_all_songs(request):
     context = {
         'songs': songs
     }
-    print(context)
     return render(request, 'songs/songs.html', context)
 
 

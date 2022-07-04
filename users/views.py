@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, HttpResponseRedirect
 
@@ -28,3 +28,10 @@ def user_login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'users/user_login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect("/")
+
+
