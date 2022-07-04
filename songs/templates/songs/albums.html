@@ -4,6 +4,7 @@
     <div class="d-flex flex-wrap justify-content-around mt-5">
     {% for album in albums %}
             <div class="card" style="width: 18rem;">
+            <a href="{% url 'view_album' album.id %}" class="card-link" style="text-decoration: none">
               <img src="{{ album.thumbnail.url }}" class="card-img-top" alt="...">
               <div class="card-body">
                 <h5 class="card-title">{{ album.name }}</h5>
@@ -18,9 +19,7 @@
                 {% endfor %}
                 </li>
               </ul>
-              <div class="card-body">
-                <a href="{% url 'view_album' album.id %}" class="card-link">Open</a>
-              </div>
+              </a>
             </div>
         {% endfor %}
     </div>
