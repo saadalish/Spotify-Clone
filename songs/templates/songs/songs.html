@@ -6,10 +6,10 @@
 </head>
 <body>
     <div>
-        {% if singles %}
+        {% if songs %}
             <H3>My Songs</H3>
-            {% for single in singles %}.
-                <a href="{% url 'update_song' single.id %}">{{ single }}</a>
+            {% for song in songs %}.
+                <a href="{% url 'update_song' song.id %}">{{ song }}</a>
             <hr/>
             {% endfor %}
         {% else %}

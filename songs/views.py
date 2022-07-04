@@ -5,25 +5,25 @@ from .forms import SongForm
 from songs.models import Song
 
 
-def get_all_singles_of_user(request):
-    singles = Song.objects.filter(artists=request.user, type="Single")
+def get_all_songs(request):
+    songs = Song.objects.filter(artists=request.user, type="Single")
     context = {
-        'singles': singles
+        'songs': songs
     }
     return render(request, 'songs/songs.html', context)
 
 
 def add_song(request):
     if request.method == 'POST':
-        form = SongForm(request.POST, request.FILES, is_album=False)
+        form = SongForm(request.POST, request.FILES)
         if form.is_valid():
             song = form.save(commit=False)
             song.type = "Single"
             song.save()
             form.save_m2m()
-            return HttpResponseRedirect(reverse('get_all_singles_of_user'))
+            return HttpResponseRedirect(reverse('get_all_songs'))
     else:
-        form = SongForm(is_album=False)
+        form = SongForm()
     context = {'form': form}
     return render(request, "songs/create_song.html", context)
 
@@ -31,12 +31,12 @@ def add_song(request):
 def update_song(request, song_id):
     song = get_object_or_404(Song, id=song_id)
     if request.method == "POST":
-        form = SongForm(request.POST, request.FILES, is_album=False, instance=song)
+        form = SongForm(request.POST, request.FILES, instance=song)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('get_all_singles_of_user'))
+            return HttpResponseRedirect(reverse('get_all_songs'))
     else:
-        form = SongForm(None, is_album=False, instance=song)
+        form = SongForm(None, instance=song)
     context = {
         "form": form,
         "song_id": song_id,
@@ -47,4 +47,4 @@ def update_song(request, song_id):
 def delete_song(request, song_id):
     song = Song.objects.get(id=song_id)
     song.delete()
-    return HttpResponseRedirect(reverse('get_all_singles_of_user'))
+    return HttpResponseRedirect(reverse('get_all_songs'))
