@@ -16,7 +16,6 @@ def create(request):
     if request.method == 'POST':
         form = PlaylistForm(request.POST)
         if form.is_valid():
-            form.instance.user = request.user
             playlist = form.save(commit=False)
             playlist.user = request.user
             render(request, "playlists/index.html")
