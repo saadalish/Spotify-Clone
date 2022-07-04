@@ -1,21 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>All Albums</title>
-</head>
-<body>
+{% block content %}
     <div>
         {% if albums %}
-            <H3>My Albums</H3>
-            {% for album in albums %}.
-                <a href="{% url 'update_album' album.id %}">{{ album }}</a>
-                 <a href="{% url 'delete_album' album.id %}">Delete Album</a>
-            <hr/>
+        <div class="d-flex flex-wrap justify-content-around mt-5">
+        {% for album in albums %}
+                <div class="card" style="width: 18rem;">
+                  <a href="{% url 'view_album' album.id %}" class="card-link" style="text-decoration: none">
+                      <img src="{{ album.thumbnail.url }}" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title">{{ album.name }}</h5>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><b>Publishing House:</b> {{ album.publishing_house }}</li>
+                        <li class="list-group-item"><b>Artists:</b>
+                        {% for artist in album.artists.all %}
+                            {{ artist }}
+                        {% empty %}
+                            None
+                        {% endfor %}
+                        </li>
+                      </ul>
+                  </a>
+                </div>
             {% endfor %}
+        </div>
         {% else %}
-            <p>No Album Added yet</p>
+            <li class="list-group-item">No Albums Available</li>
         {% endif %}
     </div>
-</body>
-</html>
+ {% endblock %}

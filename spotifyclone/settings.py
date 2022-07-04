@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'home.apps.HomeConfig',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
     'songs.apps.SongsConfig',
