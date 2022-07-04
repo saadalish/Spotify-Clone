@@ -8,8 +8,11 @@
     <div>
         {% if songs %}
             <H3>My Songs</H3>
-            {% for song in songs %}.
-                <a href="{% url 'update_song' song.id %}">{{ song }}</a>
+            {% for song in songs %}
+                <div>
+                    <a href="{% url 'update_song' song.id %}">{{ song }}</a>
+                    <a href="{% url 'delete_song' song.id %}">Delete Song</a>
+                </div>
             <hr/>
             {% endfor %}
         {% else %}

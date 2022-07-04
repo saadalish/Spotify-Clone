@@ -16,16 +16,15 @@ def get_all_songs(request):
 def add_song(request):
     if request.method == 'POST':
         form = SongForm(request.POST, request.FILES)
+
         if form.is_valid():
-            song = form.save(commit=False)
-            song.type = "Single"
-            song.save()
-            form.save_m2m()
+            form.instance.type = "Single"
+            form.save()
             return HttpResponseRedirect(reverse('get_all_songs'))
     else:
         form = SongForm()
     context = {'form': form}
-    return render(request, "songs/create_song.html", context)
+    return render(request, "songs/add_song.html", context)
 
 
 def update_song(request, song_id):
