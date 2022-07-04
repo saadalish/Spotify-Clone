@@ -20,7 +20,7 @@ def add_song(request):
         if form.is_valid():
             form.instance.type = "Single"
             form.save()
-            return HttpResponseRedirect(reverse('get_all_songs'))
+            return HttpResponseRedirect('/')
     else:
         form = SongForm()
     context = {'form': form}
@@ -64,7 +64,7 @@ def delete_song(request, song_id, album_id=None):
     song.delete()
     if album_id:
         return HttpResponseRedirect(reverse('update_album', args=[album_id]))
-    return HttpResponseRedirect(reverse('get_all_songs'))
+    return HttpResponseRedirect("/")
 
 
 def add_album(request):
