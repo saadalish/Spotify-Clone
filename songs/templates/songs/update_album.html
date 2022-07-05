@@ -1,40 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Update your Album</title>
-</head>
-{% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'songs/style.css' %}">
-<body>
-<div>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save Changes">
-        <a href="{% url 'delete_album' album_id %}">Delete Album</a>
-    </form><br>
-     {% if songs_in_album %}
-    <h1>My Songs</h1>
-    <table>
-    <tr>
-        <th>Title</th>
-        <th>Publishing House</th>
-        <th>Action</th>
-    </tr>
-    {% for song in songs_in_album %}
-        <tr>
-            <td>{{ song.title }}</td>
-            <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'delete_song' album_id song.id %}>Delete Song</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-    {% else %}
-        <p>No Song added in Album yet.</p>
-    {% endif %}<br>
-    <a href={% url 'add_song_to_album' album_id %}>Add New Song to Album</a>
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="bg-light">
+    <div>
+        <h4 class="card-title mt-3">Albums</h4>
+        <p>Update your Album</p>
+        <section class="form-group">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Save Changes">
+                <a href="{% url 'delete_album' album_id %}">Delete Album</a>
+            </form>
+        </section>
+        <section class="mt-5">
+            {% if songs_in_album %}
+            <h3>My Songs</h3>
+            <table class="table">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Publishing House</th>
+                <th scope="col">Action</th>
+            </tr>
+            {% for song in songs_in_album %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ song.title }}</td>
+                    <td>{{ song.publishing_house }}</td>
+                    <td><a href={% url 'delete_song' album_id song.id %}>Delete Song</a></td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% else %}
+                <p class="text-danger">No Song added in Album yet.</p>
+            {% endif %}<br>
+            <a href={% url 'add_song_to_album' album_id %}>Add New Song to Album</a>
+        </section>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}

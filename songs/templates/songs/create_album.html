@@ -1,17 +1,20 @@
-{% extends 'home/bootstrap.html' %}
+{% extends 'home/base.html' %}
 {% block content %}
 <div class="card bg-light">
     <article class="card-body mx-auto" style="max-width: 400px;">
-        <h4 class="card-title mt-3 text-center">Playlists</h4>
-        <p class="text-center">Create your new Playlist</p>
+        <h4 class="card-title mt-3 text-center">Albums</h4>
+        <p class="text-center">Create your new Album</p>
         <section class="form-group">
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Submit">
             </form>
-
         </section>
     </article>
 </div>
 {% endblock %}
+
+
+
+

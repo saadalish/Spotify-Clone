@@ -12,7 +12,7 @@
                 {% if request.user.is_authenticated %}
                     {% include 'playlists/index.html' %}
                     {% if request.user.is_artist %}
-                         {% include 'songs/albums.html' %}
+                         {% include 'songs/user_albums.html' %}
                          {% include 'songs/songs.html' %}
                     {% endif %}
                 {% endif %}

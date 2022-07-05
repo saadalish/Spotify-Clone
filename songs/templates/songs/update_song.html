@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Update your Song</title>
-</head>
-{% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'songs/style.css' %}">
-<body>
-<div>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save Changes">
-        <a href="{% url 'delete_song' song_id %}">Delete Song</a>
-    </form><br>
-
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="bg-light">
+    <div>
+        <h4 class="card-title mt-3">Albums</h4>
+        <p>Update your Album</p>
+        <section class="form-group">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Save Changes">
+                <a href="{% url 'delete_song' song_id %}">Delete Song</a>
+            </form><br>
+        </section>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}

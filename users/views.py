@@ -10,6 +10,7 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect("/login")
     else:
         form = SignUpForm()
     return render(request, 'users/signup.html', {'form': form})
@@ -24,7 +25,7 @@ def user_login(request):
             valid_user = authenticate(username=username, password=password)
             if valid_user is not None:
                 login(request, valid_user)
-                return HttpResponseRedirect("/playlists/create")
+                return HttpResponseRedirect("/")
     else:
         form = AuthenticationForm()
     return render(request, 'users/user_login.html', {'form': form})
@@ -33,4 +34,3 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/")
-

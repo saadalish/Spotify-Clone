@@ -1,62 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-{% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'songs/style.css' %}">
-<body>
-<div>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Save Changes">
-        <a href="{% url 'delete' playlist.id %}">Delete Playlist</a>
-    </form>
-{% if playlist_songs %}
-    <h1>My Songs</h1>
-    <table>
-    <tr>
-        <th>Title</th>
-        <th>Type</th>
-        <th>Publishing House</th>
-        <th>Action</th>
-    </tr>
-    {% for song in playlist_songs %}
-        <tr>
-            <td>{{ song.title }}</td>
-            <td>{{ song.type }}</td>
-            <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'remove_song_from_playlist' playlist.id song.id %}>remove</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-    {% else %}
-        <p>Playlist Empty</p>
-    {% endif %}
-    {% if recommended_songs %}
-    <h1>Add new Songs in your Playlist</h1>
-    <table>
-    <tr>
-        <th>Title</th>
-        <th>Type</th>
-        <th>Publishing House</th>
-        <th>Action</th>
-    </tr>
-    {% for song in recommended_songs %}
-        <tr>
-            <td>{{ song.title }}</td>
-            <td>{{ song.type }}</td>
-            <td>{{ song.publishing_house }}</td>
-            <td><a href={% url 'add_song_to_playlist' playlist.id song.id %}>Add</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-    {% else %}
-        <p>No Songs available.</p>
-    {% endif %}
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="bg-light">
+    <div>
+        <h4 class="card-title mt-3">Playlists</h4>
+        <p>Update your Playlist</p>
+        <section class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Save Changes">
+                <a href="{% url 'delete' playlist.id %}">Delete Playlist</a>
+            </form>
+        </section>
+        <section class="mt-5">
+            {% if playlist_songs %}
+                  <h3>My Songs</h3>
+                  <table class="table">
+                      <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Publishing House</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for song in playlist_songs %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ song.title }}</td>
+                                <td>{{ song.type }}</td>
+                                <td>{{ song.publishing_house }}</td>
+                                <td><a href={% url 'remove_song_from_playlist' playlist.id song.id %}>remove</a></td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+            {% else %}
+                <p class="text-danger">Playlist Empty | No songs added yet</p>
+            {% endif %}
+        </section>
+        <section class="mt-5">
+            {% if recommended_songs %}
+            <h1>Add new Songs in your Playlist</h1>
+            <table class="table">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Type</th>
+                <th scope="col">Publishing House</th>
+                <th scope="col">Action</th>
+            </tr>
+            {% for song in recommended_songs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ song.title }}</td>
+                    <td>{{ song.type }}</td>
+                    <td>{{ song.publishing_house }}</td>
+                    <td><a href={% url 'add_song_to_playlist' playlist.id song.id %}>Add</a></td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% else %}
+                <p class="text-danger">No Songs available at this moment | Server down</p>
+            {% endif %}
+        </section>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}

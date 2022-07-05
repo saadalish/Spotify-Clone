@@ -1,15 +1,19 @@
 {% block content %}
-<body>
-    <div>
-        {% if user_albums %}
-            <H3>My Albums</H3>
-            {% for album in user_albums %}.
-                <a href="{% url 'update_album' album.id %}">{{ album }}</a>
-                 <a href="{% url 'delete_album' album.id %}">Delete Album</a>
-            <hr/>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">My Albums</h5>
+  </div>
+  <ul class="list-group list-group-flush">
+      {% if user_albums %}
+            {% for album in user_albums %}
+                 <li class="list-group-item"><a href="{% url 'update_album' album.id %}">{{ album }}</a></li>
             {% endfor %}
-        {% else %}
-            <p>No Album Added yet</p>
-        {% endif %}
-    </div>
+      {% else %}
+          <li class="list-group-item">No Album Added yet</li>
+      {% endif %}
+  </ul>
+  <div class="card-body">
+    <a href='{% url 'add_album' %}' class="card-link">Create new Album</a>
+  </div>
+</div>
 {% endblock %}

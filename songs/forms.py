@@ -1,6 +1,5 @@
 from django import forms
 
-
 from .models import Album
 from songs.models import Song
 
