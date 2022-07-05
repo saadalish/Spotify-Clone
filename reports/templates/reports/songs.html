@@ -1,0 +1,19 @@
+{% extends 'home/base.html' %}
+{% block content %}
+    <table class="table">
+            <tr>
+                <th style="width: 20%" scope="col">#</th>
+                <th style="width: 20%" scope="col">Title</th>
+                <th style="width: 30%" scope="col">Publishing House</th>
+                <th style="width: 30%" scope="col">No of times Played</th>
+            </tr>
+            {% for song in songs %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ song.title }}</td>
+                    <td>{{ song.publishing_house }}</td>
+                    <td>{{ song.num_of_times_played }}</td>
+                </tr>
+            {% endfor %}
+    </table>
+{% endblock %}
