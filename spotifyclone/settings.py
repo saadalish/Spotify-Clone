@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Now we add here our custom middleware
+    'core.middleware.logs_middleware.LogsMiddleware'
 ]
 
 ROOT_URLCONF = 'spotifyclone.urls'
@@ -142,3 +144,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+LOGGING = {
+    'version': 1,
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['file'],
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': './logs/request_response.log',
+            'level': 'INFO',
+            'formatter': 'simple',
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+    },
+}
+
