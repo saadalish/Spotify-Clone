@@ -9,7 +9,10 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Save Changes">
-                <a href="{% url 'delete' playlist.id %}">Delete Playlist</a>
+            </form>
+            <form name="delete_playlist" method="post" action="{% url 'delete' playlist.id %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete Playlist" />
             </form>
         </section>
         <section class="mt-5">
@@ -32,7 +35,12 @@
                                 <td>{{ song.title }}</td>
                                 <td>{{ song.type }}</td>
                                 <td>{{ song.publishing_house }}</td>
-                                <td><a href={% url 'remove_song_from_playlist' playlist.id song.id %}>remove</a></td>
+                                <td>
+                                    <form name="remove_song_from_playlist" method="post" action="{% url 'remove_song_from_playlist' playlist.id song.id %}">
+                                            {% csrf_token %}
+                                            <input type="submit" value="remove" />
+                                    </form>
+                                </td>
                             </tr>
                         {% endfor %}
                       </tbody>
@@ -58,7 +66,12 @@
                     <td>{{ song.title }}</td>
                     <td>{{ song.type }}</td>
                     <td>{{ song.publishing_house }}</td>
-                    <td><a href={% url 'add_song_to_playlist' playlist.id song.id %}>Add</a></td>
+                    <td>
+                        <form name="add_song_to_playlist" method="post" action="{% url 'add_song_to_playlist' playlist.id song.id %}">
+                                {% csrf_token %}
+                                <input type="submit" value="Add" />
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
             </table>

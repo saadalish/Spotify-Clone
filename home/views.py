@@ -6,16 +6,16 @@ from playlists.models import Playlist
 
 
 class HomeView(View):
-    context = {}
 
     def get(self, request):
+        context = {}
         albums = Album.objects.all()
         if request.user.is_authenticated:
             playlists = Playlist.objects.filter(user=request.user)
             user_albums = albums.filter(artists=request.user)
             songs = Song.objects.filter(artists=request.user, type="Single")
-            self.context['playlists'] = playlists
-            self.context['user_albums'] = user_albums
-            self.context['songs'] = songs
-        self.context['albums'] = albums
-        return render(request, 'home/home.html', self.context)
+            context['playlists'] = playlists
+            context['user_albums'] = user_albums
+            context['songs'] = songs
+        context['albums'] = albums
+        return render(request, 'home/home.html', context)

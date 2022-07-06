@@ -7,25 +7,22 @@ from .models import Playlist
 from songs.models import Song
 
 
-class IndexView(View):
-    context = {}
+class GetAllPlaylistsView(View):
 
     def get(self, request):
         playlists = Playlist.objects.filter(user=request.user)
-        self.context = {"playlists": playlists}
-        return render(request, "playlists/index.html", self.context)
+        context = {"playlists": playlists}
+        return render(request, "playlists/index.html", context)
 
 
 class CreateView(View):
-    context = {}
 
     def get(self, request):
         form = PlaylistForm()
-        self.context = {'form': form}
-        return render(request, "playlists/create.html", self.context)
+        context = {'form': form}
+        return render(request, "playlists/create.html", context)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         form = PlaylistForm(request.POST)
         if form.is_valid():
             form.instance.user = request.user
@@ -34,7 +31,6 @@ class CreateView(View):
 
 
 class UpdateView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
@@ -42,7 +38,6 @@ class UpdateView(View):
         form = PlaylistForm(None, instance=playlist)
         songs_in_playlist = playlist.songs.values_list('id', flat=True)
         recommended_songs = Song.objects.exclude(id__in=songs_in_playlist)[:10]
-        self.context = {'form': form}
         context = {
             "form": form,
             "playlist": playlist,
@@ -62,7 +57,7 @@ class UpdateView(View):
 
 class DeleteView(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
         playlist = get_object_or_404(Playlist, id=playlist_id)
         playlist.delete()
@@ -71,7 +66,7 @@ class DeleteView(View):
 
 class AddSongToPlaylistView(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
         song_id = self.kwargs.get('song_id')
         playlist = Playlist.objects.get(id=playlist_id)
@@ -82,7 +77,7 @@ class AddSongToPlaylistView(View):
 
 class RemoveSongToPlaylistView(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
         song_id = self.kwargs.get('song_id')
         playlist = Playlist.objects.get(id=playlist_id)

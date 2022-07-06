@@ -1,7 +1,7 @@
 from django.urls import path
 
 from playlists.views import (
-    IndexView,
+    GetAllPlaylistsView,
     CreateView,
     UpdateView,
     DeleteView,
@@ -11,7 +11,7 @@ from playlists.views import (
 )
 
 urlpatterns = [
-    path('', IndexView.as_view(), name='index'),
+    path('', GetAllPlaylistsView.as_view(), name='index'),
     path('create', CreateView.as_view(), name='create'),
     path('<playlist_id>', UpdateView.as_view(), name='update'),
     path('<playlist_id>/delete', DeleteView.as_view(), name='delete'),

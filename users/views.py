@@ -7,17 +7,15 @@ from .forms import SignUpForm
 
 
 class SignupView(View):
-    context = {}
 
     def get(self, request):
         form = SignUpForm()
-        self.context = {
+        context = {
             'form': form
         }
-        return render(request, 'users/signup.html', self.context)
+        return render(request, 'users/signup.html', context)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
@@ -25,17 +23,15 @@ class SignupView(View):
 
 
 class UserLoginView(View):
-    context = {}
 
     def get(self, request):
         form = AuthenticationForm()
-        self.context = {
+        context = {
             'form': form
         }
-        return render(request, 'users/signup.html', self.context)
+        return render(request, 'users/signup.html', context)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -47,8 +43,7 @@ class UserLoginView(View):
 
 
 class UserLogoutView(View):
-    
-    @staticmethod
-    def get(request):
+
+    def post(self, request):
         logout(request)
         return HttpResponseRedirect("/")

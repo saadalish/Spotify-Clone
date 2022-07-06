@@ -8,26 +8,23 @@ from songs.models import Song
 
 
 class GetAllSongsView(View):
-    context = {}
 
     def get(self, request):
         songs = Song.objects.filter(artists=request.user, type="Single")
-        self.context = {
+        context = {
             'songs': songs
         }
-        return render(request, 'songs/songs.html', self.context)
+        return render(request, 'songs/songs.html', context)
 
 
 class AddSongView(View):
-    context = {}
 
     def get(self, request):
         form = SongForm()
-        self.context = {'form': form}
-        return render(request, "songs/add_song.html", self.context)
+        context = {'form': form}
+        return render(request, "songs/add_song.html", context)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         form = SongForm(request.POST, request.FILES)
         if form.is_valid():
             form.instance.type = "Single"
@@ -36,17 +33,16 @@ class AddSongView(View):
 
 
 class UpdateSongView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         song_id = self.kwargs.get('song_id')
         song = get_object_or_404(Song, id=song_id)
         form = SongForm(None, instance=song)
-        self.context = {
+        context = {
             'form': form,
             "song_id": song_id
         }
-        return render(request, "songs/update_song.html", self.context)
+        return render(request, "songs/update_song.html", context)
 
     def post(self, request, *args, **kwargs):
         song_id = self.kwargs.get('song_id')
@@ -58,30 +54,28 @@ class UpdateSongView(View):
 
 
 class GetAllAlbumsView(View):
-    context = {}
 
     def get(self, request):
         albums = Album.objects.all()
-        self.context = {
+        context = {
             'albums': albums
         }
-        return render(request, 'songs/albums.html', self.context)
+        return render(request, 'songs/albums.html', context)
 
 
 class GetAllAlbumsOfUserView(View):
-    context = {}
 
     def get(self, request):
         albums = Album.objects.filter(artists=request.user)
-        self.context = {
+        context = {
             'albums': albums
         }
-        return render(request, 'songs/user_albums.html', self.context)
+        return render(request, 'songs/user_albums.html', context)
 
 
 class DeleteSongView(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         song_id = self.kwargs.get('song_id')
         album_id = self.kwargs.get('album_id')
         song = Song.objects.get(id=song_id)
@@ -92,15 +86,13 @@ class DeleteSongView(View):
 
 
 class AddAlbumView(View):
-    context = {}
 
     def get(self, request):
         form = AlbumForm()
-        self.context = {'form': form}
-        return render(request, "songs/add_album.html", self.context)
+        context = {'form': form}
+        return render(request, "songs/add_album.html", context)
 
-    @staticmethod
-    def post(request):
+    def post(self, request):
         form = AlbumForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
@@ -108,19 +100,18 @@ class AddAlbumView(View):
 
 
 class UpdateAlbumView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         songs_in_album = Song.objects.filter(album_id=album_id)
         form = AlbumForm(None, instance=album)
-        self.context = {
+        context = {
             "form": form,
             "album_id": album_id,
             "songs_in_album": songs_in_album
         }
-        return render(request, "songs/update_album.html", self.context)
+        return render(request, "songs/update_album.html", context)
 
     def post(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
@@ -132,22 +123,21 @@ class UpdateAlbumView(View):
 
 
 class AlbumView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         songs_in_album = Song.objects.filter(album_id=album_id)
-        self.context = {
+        context = {
             "album": album,
             "songs_in_album": songs_in_album
         }
-        return render(request, "songs/view_album.html", self.context)
+        return render(request, "songs/view_album.html", context)
 
 
 class DeleteAlbumView(View):
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         album.delete()
@@ -155,12 +145,11 @@ class DeleteAlbumView(View):
 
 
 class AddSongToAlbumView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         form = SongForm()
-        self.context = {'form': form}
-        return render(request, "songs/create_song.html", self.context)
+        context = {'form': form}
+        return render(request, "songs/create_song.html", context)
 
     def post(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')

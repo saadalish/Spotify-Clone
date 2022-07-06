@@ -9,7 +9,10 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Save Changes">
-                <a href="{% url 'delete_song' song_id %}">Delete Song</a>
+                <form name="delete_song" method="post" action="{% url 'delete_song' song.id %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete Song" />
+                </form>
             </form><br>
         </section>
     </div>

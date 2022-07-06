@@ -6,7 +6,6 @@ from songs.models import Song
 
 
 class GetAllSongsView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
@@ -15,14 +14,13 @@ class GetAllSongsView(View):
         else:
             songs = Song.objects.all()
         songs = songs.annotate(num_of_times_played=Count('playedsong'))
-        self.context = {
+        context = {
             'songs': songs
         }
-        return render(request, 'reports/songs.html', self.context)
+        return render(request, 'reports/songs.html', context)
 
 
 class GetAllSongsInYearView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
@@ -32,14 +30,13 @@ class GetAllSongsInYearView(View):
         else:
             songs = Song.objects.all()
         songs = songs.annotate(num_of_times_played=Count('playedsong', filter=Q(created_at__year=year)))
-        self.context = {
+        context = {
             'songs': songs
         }
-        return render(request, 'reports/songs.html', self.context)
+        return render(request, 'reports/songs.html', context)
 
 
 class GetAllSongsInMonthView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
@@ -52,14 +49,13 @@ class GetAllSongsInMonthView(View):
         songs = songs.annotate(
             num_of_times_played=Count('playedsong', filter=Q(created_at__year=year, created_at__month=month))
         )
-        self.context = {
+        context = {
             'songs': songs
         }
-        return render(request, 'reports/songs.html', self.context)
+        return render(request, 'reports/songs.html', context)
 
 
 class GetAllSongsOnDayView(View):
-    context = {}
 
     def get(self, request, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
@@ -74,7 +70,7 @@ class GetAllSongsOnDayView(View):
                 'playedsong', filter=Q(created_at__year=year, created_at__month=month, created_at__day=day)
             )
         )
-        self.context = {
+        context = {
             'songs': songs
         }
-        return render(request, 'reports/songs.html', self.context)
+        return render(request, 'reports/songs.html', context)
