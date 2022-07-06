@@ -1,23 +1,41 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, HttpResponseRedirect
+from django.views import View
 
 from .forms import SignUpForm
 
 
-def signup(request):
-    if request.method == 'POST':
+class SignupView(View):
+    context = {}
+
+    def get(self, request):
+        form = SignUpForm()
+        self.context = {
+            'form': form
+        }
+        return render(request, 'users/signup.html', self.context)
+
+    @staticmethod
+    def post(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect("/login")
-    else:
-        form = SignUpForm()
-    return render(request, 'users/signup.html', {'form': form})
 
 
-def user_login(request):
-    if request.method == 'POST':
+class UserLoginView(View):
+    context = {}
+
+    def get(self, request):
+        form = AuthenticationForm()
+        self.context = {
+            'form': form
+        }
+        return render(request, 'users/signup.html', self.context)
+
+    @staticmethod
+    def post(request):
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -26,11 +44,11 @@ def user_login(request):
             if valid_user is not None:
                 login(request, valid_user)
                 return HttpResponseRedirect("/")
-    else:
-        form = AuthenticationForm()
-    return render(request, 'users/user_login.html', {'form': form})
 
 
-def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect("/")
+class UserLogoutView(View):
+    
+    @staticmethod
+    def get(request):
+        logout(request)
+        return HttpResponseRedirect("/")
