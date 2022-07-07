@@ -1,10 +1,14 @@
 from django.urls import path
 
-import users.views
+from users.views import (
+    SignupView,
+    UserLoginView,
+    UserLogoutView
+)
 
 urlpatterns = [
-    path('signup/', users.views.signup, name="signup"),
-    path('login/', users.views.user_login, name="login"),
-    path('logout/', users.views.user_logout, name="logout")
+    path('signup/', SignupView.as_view(), name="signup"),
+    path('login/', UserLoginView.as_view(), name="login"),
+    path('logout/', UserLogoutView.as_view(), name="logout")
 
 ]

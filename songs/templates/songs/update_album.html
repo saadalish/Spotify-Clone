@@ -9,7 +9,10 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Save Changes">
-                <a href="{% url 'delete_album' album_id %}">Delete Album</a>
+                <form name="delete_song" method="post" action="{% url 'delete_album' album_id %}">
+                    {% csrf_token %}
+                    <input type="submit" value="Delete Album" />
+                </form>
             </form>
         </section>
         <section class="mt-5">
@@ -27,7 +30,12 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ song.title }}</td>
                     <td>{{ song.publishing_house }}</td>
-                    <td><a href={% url 'delete_song' album_id song.id %}>Delete Song</a></td>
+                    <td>
+                        <form name="delete_song" method="post" action="{% url 'delete_song' album_id song.id %}">
+                            {% csrf_token %}
+                            <input type="submit" value="Delete Song" />
+                        </form>
+                    </td>
                 </tr>
             {% endfor %}
             </table>
