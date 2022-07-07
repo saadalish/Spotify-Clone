@@ -31,7 +31,7 @@
                     <td>{{ song.title }}</td>
                     <td>{{ song.publishing_house }}</td>
                     <td>
-                        <form name="delete_song" method="post" action="{% url 'delete_song' album_id song.id %}">
+                        <form name="delete_song" method="post" action="{% url 'delete_song' song.id %}">
                             {% csrf_token %}
                             <input type="submit" value="Delete Song" />
                         </form>
