@@ -12,15 +12,15 @@ class GetAllPlaylistsView(View):
     def get(self, request):
         playlists = Playlist.objects.filter(user=request.user)
         context = {"playlists": playlists}
-        return render(request, "playlists/index.html", context)
+        return render(request, "playlists/get_all_playlists.html", context)
 
 
-class CreateView(View):
+class CreatePlaylistView(View):
 
     def get(self, request):
         form = PlaylistForm()
         context = {'form': form}
-        return render(request, "playlists/create.html", context)
+        return render(request, "playlists/create_playlist.html", context)
 
     def post(self, request):
         form = PlaylistForm(request.POST)
@@ -30,7 +30,7 @@ class CreateView(View):
             return HttpResponseRedirect(reverse('home'))
 
 
-class UpdateView(View):
+class UpdatePlaylistView(View):
 
     def get(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
@@ -44,7 +44,7 @@ class UpdateView(View):
             "recommended_songs": recommended_songs,
             "playlist_songs": playlist.songs.all()
         }
-        return render(request, "playlists/update.html", context)
+        return render(request, "playlists/update_playlist.html", context)
 
     def post(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
@@ -52,16 +52,16 @@ class UpdateView(View):
         form = PlaylistForm(request.POST, instance=playlist)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('get_all_playlists'))
 
 
-class DeleteView(View):
+class DeletePlaylistView(View):
 
     def post(self, request, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
         playlist = get_object_or_404(Playlist, id=playlist_id)
         playlist.delete()
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('get_all_playlists'))
 
 
 class AddSongToPlaylistView(View):
@@ -72,7 +72,7 @@ class AddSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.add(song)
-        return HttpResponseRedirect(reverse('update', args=[playlist_id]))
+        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
 
 
 class RemoveSongToPlaylistView(View):
@@ -83,6 +83,6 @@ class RemoveSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.remove(song)
-        return HttpResponseRedirect(reverse('update', args=[playlist_id]))
+        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
 
 

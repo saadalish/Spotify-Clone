@@ -13,7 +13,6 @@ from songs.views import (
     AddSongToAlbumView
 
 )
-from . import views
 
 urlpatterns = [
 
