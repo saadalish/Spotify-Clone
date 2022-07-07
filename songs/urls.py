@@ -15,7 +15,6 @@ from songs.views import (
 
 )
 
-
 urlpatterns = [
 
     path('', GetAllSongsView.as_view(), name='get_all_songs'),
