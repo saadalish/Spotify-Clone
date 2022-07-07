@@ -9,15 +9,15 @@ from songs.models import Song
 
 
 class GetAllPlaylistsView(generic.ListView):
-    template_name = 'playlists/index.html'
+    template_name = 'playlists/get_all_playlists.html'
     context_object_name = 'playlists'
 
     def get_queryset(self):
         return Playlist.objects.filter(user=self.request.user)
 
 
-class CreateView(generic.CreateView):
-    template_name = 'playlists/create.html'
+class CreatePlaylistView(generic.CreateView):
+    template_name = 'playlists/create_playlist.html'
     form_class = PlaylistForm
 
     def form_valid(self, form):
@@ -26,9 +26,9 @@ class CreateView(generic.CreateView):
         return HttpResponseRedirect(reverse('home'))
 
 
-class UpdateView(generic.DeleteView):
+class UpdatePlaylistView(generic.DeleteView):
     model = Playlist
-    template_name = 'playlists/update.html'
+    template_name = 'playlists/update_playlist.html'
 
     def get_context_data(self, *args, **kwargs):
         playlist_id = self.kwargs.get('pk')
@@ -52,10 +52,10 @@ class UpdateDetailsView(generic.UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
-        return HttpResponseRedirect(reverse('index'))
+        return HttpResponseRedirect(reverse('get_all_playlists'))
 
 
-class DeleteView(generic.DeleteView):
+class DeletePlaylistView(generic.DeleteView):
     model = Playlist
     success_url = "/"
 

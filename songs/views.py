@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
@@ -80,7 +80,6 @@ class UpdateAlbumView(generic.DetailView):
 
 
 class UpdateAlbumDetailsView(generic.UpdateView):
-    print("saad ali")
     model = Album
     form_class = AlbumForm
     success_url = 'songs/update_album.html'

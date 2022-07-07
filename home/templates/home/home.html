@@ -10,7 +10,7 @@
             </div>
             <div class="col-md-3">
                 {% if request.user.is_authenticated %}
-                    {% include 'playlists/index.html' %}
+                    {% include 'playlists/get_all_playlists.html' %}
                     {% if request.user.is_artist %}
                          {% include 'songs/user_albums.html' %}
                          {% include 'songs/songs.html' %}
