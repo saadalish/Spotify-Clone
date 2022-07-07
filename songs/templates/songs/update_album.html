@@ -5,14 +5,14 @@
         <h4 class="card-title mt-3">Albums</h4>
         <p>Update your Album</p>
         <section class="form-group">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data" action="{% url 'update_album_details' album_id %}">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Save Changes">
-                <form name="delete_song" method="post" action="{% url 'delete_album' album_id %}">
+            </form>
+            <form name="delete_song" method="post" action="{% url 'delete_album' album_id %}">
                     {% csrf_token %}
                     <input type="submit" value="Delete Album" />
-                </form>
             </form>
         </section>
         <section class="mt-5">

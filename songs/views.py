@@ -29,6 +29,7 @@ class UpdateSongView(generic.UpdateView):
     model = Song
     template_name = 'songs/update_song.html'
     form_class = SongForm
+    pk_url_kwarg = "song_id"
 
     def form_valid(self, form):
         form.save()
@@ -50,6 +51,7 @@ class GetAllAlbumsOfUserView(generic.ListView):
 
 class DeleteSongView(generic.DeleteView):
     model = Song
+    pk_url_kwarg = "song_id"
     success_url = "/"
 
 
@@ -62,12 +64,13 @@ class AddAlbumView(generic.CreateView):
         return HttpResponseRedirect('/')
 
 
-class UpdateAlbumView(generic.DetailView):
+class UpdateAlbumView(generic.TemplateView):
     model = Album
     template_name = 'songs/update_album.html'
+    pk_url_kwarg = "album_id"
 
     def get_context_data(self, *args, **kwargs):
-        album_id = self.kwargs.get('pk')
+        album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         songs_in_album = Song.objects.filter(album_id=album_id)
         form = AlbumForm(None, instance=album)
@@ -83,6 +86,7 @@ class UpdateAlbumDetailsView(generic.UpdateView):
     model = Album
     form_class = AlbumForm
     success_url = 'songs/update_album.html'
+    pk_url_kwarg = "album_id"
 
     def form_valid(self, form):
         form.save()
@@ -92,9 +96,10 @@ class UpdateAlbumDetailsView(generic.UpdateView):
 class AlbumView(generic.DetailView):
     model = Album
     template_name = 'songs/view_album.html'
+    pk_url_kwarg = "album_id"
 
     def get_context_data(self, *args, **kwargs):
-        album_id = self.kwargs.get('pk')
+        album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         songs_in_album = Song.objects.filter(album_id=album_id)
         context = {
@@ -107,16 +112,20 @@ class AlbumView(generic.DetailView):
 class DeleteAlbumView(generic.DeleteView):
     model = Album
     success_url = "/"
+    pk_url_kwarg = "album_id"
 
 
 class AddSongToAlbumView(generic.CreateView):
     template_name = 'songs/create_song.html'
     form_class = SongForm
+    pk_url_kwarg = "album_id"
 
     def form_valid(self, form):
-        album_id = self.kwargs.get('pk')
+        print("dfas")
+        album_id = self.kwargs.get("album_id")
         form.instance.type = "Album"
         form.instance.album_id = album_id
+        print(album_id)
         form.save()
         return HttpResponseRedirect('/')
 

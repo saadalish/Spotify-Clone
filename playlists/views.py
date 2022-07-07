@@ -26,12 +26,13 @@ class CreatePlaylistView(generic.CreateView):
         return HttpResponseRedirect(reverse('home'))
 
 
-class UpdatePlaylistView(generic.DeleteView):
+class UpdatePlaylistView(generic.TemplateView):
     model = Playlist
     template_name = 'playlists/update_playlist.html'
+    pk_url_kwarg = "playlist_id"
 
     def get_context_data(self, *args, **kwargs):
-        playlist_id = self.kwargs.get('pk')
+        playlist_id = self.kwargs.get('playlist_id')
         playlist = get_object_or_404(Playlist, id=playlist_id)
         form = PlaylistForm(None, instance=playlist)
         songs_in_playlist = playlist.songs.values_list('id', flat=True)
@@ -48,16 +49,18 @@ class UpdatePlaylistView(generic.DeleteView):
 class UpdatePlaylistDetailsView(generic.UpdateView):
     model = Playlist
     form_class = PlaylistForm
+    pk_url_kwarg = "playlist_id"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.save()
-        return HttpResponseRedirect(reverse('get_all_playlists'))
+        return HttpResponseRedirect('/')
 
 
 class DeletePlaylistView(generic.DeleteView):
     model = Playlist
     success_url = "/"
+    pk_url_kwarg = "playlist_id"
 
 
 class AddSongToPlaylistView(View):

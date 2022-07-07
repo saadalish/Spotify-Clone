@@ -5,7 +5,7 @@
         <h4 class="card-title mt-3">Playlists</h4>
         <p>Update your Playlist</p>
         <section class="form-group">
-            <form method="POST">
+            <form method="POST" action="{% url 'update_playlist_details' playlist.id %}">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="submit" value="Save Changes">
