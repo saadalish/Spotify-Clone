@@ -1,130 +1,86 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.urls import reverse
-from django.views import View
+from django.views import generic
 
 from .forms import AlbumForm, SongForm
 from .models import Album
 from songs.models import Song
 
 
-class GetAllSongsView(View):
+class GetAllSongsView(generic.ListView):
+    template_name = 'songs/songs.html'
+    context_object_name = 'songs'
 
-    def get(self, request):
-        songs = Song.objects.filter(artists=request.user, type="Single")
-        context = {
-            'songs': songs
-        }
-        return render(request, 'songs/songs.html', context)
+    def get_queryset(self):
+        return Song.objects.filter(artists=self.request.user, type="Single")
 
 
-class AddSongView(View):
+class AddSongView(generic.CreateView):
+    template_name = 'songs/add_song.html'
+    form_class = SongForm
 
-    def get(self, request):
-        form = SongForm()
-        context = {'form': form}
-        return render(request, "songs/add_song.html", context)
-
-    def post(self, request):
-        form = SongForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.instance.type = "Single"
-            form.save()
-            return HttpResponseRedirect('/')
+    def form_valid(self, form):
+        form.instance.type = "Single"
+        form.save()
+        return HttpResponseRedirect('/')
 
 
-class UpdateSongView(View):
+class UpdateSongView(generic.UpdateView):
+    model = Song
+    template_name = 'songs/update_song.html'
+    form_class = SongForm
+    pk_url_kwarg = "song_id"
 
-    def get(self, request, *args, **kwargs):
-        song_id = self.kwargs.get('song_id')
-        song = get_object_or_404(Song, id=song_id)
-        form = SongForm(None, instance=song)
-        context = {
-            'form': form,
-            "song_id": song_id
-        }
-        return render(request, "songs/update_song.html", context)
-
-    def post(self, request, *args, **kwargs):
-        song_id = self.kwargs.get('song_id')
-        song = get_object_or_404(Song, id=song_id)
-        form = SongForm(request.POST, request.FILES, instance=song)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('get_all_songs'))
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(reverse('home'))
 
 
-class GetAllAlbumsView(View):
-
-    def get(self, request):
-        albums = Album.objects.all()
-        context = {
-            'albums': albums
-        }
-        return render(request, 'songs/albums.html', context)
+class GetAllAlbumsView(generic.ListView):
+    template_name = 'songs/albums.html'
+    context_object_name = 'albums'
 
 
-class GetAllAlbumsOfUserView(View):
+class GetAllAlbumsOfUserView(generic.ListView):
+    template_name = 'songs/user_albums.html'
+    context_object_name = 'albums'
 
-    def get(self, request):
-        albums = Album.objects.filter(artists=request.user)
-        context = {
-            'albums': albums
-        }
-        return render(request, 'songs/user_albums.html', context)
+    def get_queryset(self):
+        return Album.objects.filter(artists=self.request.user)
 
 
-class DeleteSongView(View):
-
-    def post(self, request, *args, **kwargs):
-        song_id = self.kwargs.get('song_id')
-        album_id = self.kwargs.get('album_id')
-        song = Song.objects.get(id=song_id)
-        song.delete()
-        if album_id:
-            return HttpResponseRedirect(reverse('update_album', args=[album_id]))
-        return HttpResponseRedirect("/")
+class DeleteSongView(generic.DeleteView):
+    model = Song
+    pk_url_kwarg = "song_id"
+    success_url = "/"
 
 
-class AddAlbumView(View):
+class AddAlbumView(generic.CreateView):
+    template_name = 'songs/add_album.html'
+    form_class = AlbumForm
 
-    def get(self, request):
-        form = AlbumForm()
-        context = {'form': form}
-        return render(request, "songs/add_album.html", context)
-
-    def post(self, request):
-        form = AlbumForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('albums'))
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect('/')
 
 
-class UpdateAlbumView(View):
+class UpdateAlbumView(generic.UpdateView):
+    model = Album
+    form_class = AlbumForm
+    pk_url_kwarg = "album_id"
+    template_name = "songs/update_album.html"
 
-    def get(self, request, *args, **kwargs):
-        album_id = self.kwargs.get('album_id')
-        album = get_object_or_404(Album, id=album_id)
-        songs_in_album = Song.objects.filter(album_id=album_id)
-        form = AlbumForm(None, instance=album)
-        context = {
-            "form": form,
-            "album_id": album_id,
-            "songs_in_album": songs_in_album
-        }
-        return render(request, "songs/update_album.html", context)
-
-    def post(self, request, *args, **kwargs):
-        album_id = self.kwargs.get('album_id')
-        album = get_object_or_404(Album, id=album_id)
-        form = AlbumForm(request.POST, request.FILES, instance=album)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('albums'))
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(reverse('home'))
 
 
-class AlbumView(View):
+class AlbumView(generic.DetailView):
+    model = Album
+    template_name = 'songs/view_album.html'
+    pk_url_kwarg = "album_id"
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, *args, **kwargs):
         album_id = self.kwargs.get('album_id')
         album = get_object_or_404(Album, id=album_id)
         songs_in_album = Song.objects.filter(album_id=album_id)
@@ -132,32 +88,24 @@ class AlbumView(View):
             "album": album,
             "songs_in_album": songs_in_album
         }
-        return render(request, "songs/view_album.html", context)
+        return context
 
 
-class DeleteAlbumView(View):
-
-    def post(self, request, *args, **kwargs):
-        album_id = self.kwargs.get('album_id')
-        album = get_object_or_404(Album, id=album_id)
-        album.delete()
-        return HttpResponseRedirect(reverse('albums'))
+class DeleteAlbumView(generic.DeleteView):
+    model = Album
+    success_url = "/"
+    pk_url_kwarg = "album_id"
 
 
-class AddSongToAlbumView(View):
+class AddSongToAlbumView(generic.CreateView):
+    template_name = 'songs/create_song.html'
+    form_class = SongForm
+    pk_url_kwarg = "album_id"
 
-    def get(self, request, *args, **kwargs):
-        form = SongForm()
-        context = {'form': form}
-        return render(request, "songs/create_song.html", context)
-
-    def post(self, request, *args, **kwargs):
-        album_id = self.kwargs.get('album_id')
-        form = SongForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.instance.type = "Album"
-            form.instance.album_id = album_id
-            form.save()
-            return HttpResponseRedirect(reverse('update_album', args=[album_id]))
-
+    def form_valid(self, form):
+        album_id = self.kwargs.get("album_id")
+        form.instance.type = "Album"
+        form.instance.album_id = album_id
+        form.save()
+        return HttpResponseRedirect('/')
 

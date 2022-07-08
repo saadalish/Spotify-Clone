@@ -1,38 +1,37 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
+from django.views import generic
 
 from .forms import PlaylistForm
 from .models import Playlist
 from songs.models import Song
 
 
-class GetAllPlaylistsView(View):
+class GetAllPlaylistsView(generic.ListView):
+    template_name = 'playlists/get_all_playlists.html'
+    context_object_name = 'playlists'
 
-    def get(self, request):
-        playlists = Playlist.objects.filter(user=request.user)
-        context = {"playlists": playlists}
-        return render(request, "playlists/get_all_playlists.html", context)
-
-
-class CreatePlaylistView(View):
-
-    def get(self, request):
-        form = PlaylistForm()
-        context = {'form': form}
-        return render(request, "playlists/create_playlist.html", context)
-
-    def post(self, request):
-        form = PlaylistForm(request.POST)
-        if form.is_valid():
-            form.instance.user = request.user
-            form.save()
-            return HttpResponseRedirect(reverse('home'))
+    def get_queryset(self):
+        return Playlist.objects.filter(user=self.request.user)
 
 
-class UpdatePlaylistView(View):
+class CreatePlaylistView(generic.CreateView):
+    template_name = 'playlists/create_playlist.html'
+    form_class = PlaylistForm
 
-    def get(self, request, *args, **kwargs):
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return HttpResponseRedirect(reverse('home'))
+
+
+class PlaylistView(generic.TemplateView):
+    model = Playlist
+    template_name = 'playlists/view_playlist.html'
+    pk_url_kwarg = "playlist_id"
+
+    def get_context_data(self, *args, **kwargs):
         playlist_id = self.kwargs.get('playlist_id')
         playlist = get_object_or_404(Playlist, id=playlist_id)
         form = PlaylistForm(None, instance=playlist)
@@ -44,24 +43,25 @@ class UpdatePlaylistView(View):
             "recommended_songs": recommended_songs,
             "playlist_songs": playlist.songs.all()
         }
-        return render(request, "playlists/update_playlist.html", context)
-
-    def post(self, request, *args, **kwargs):
-        playlist_id = self.kwargs.get('playlist_id')
-        playlist = get_object_or_404(Playlist, id=playlist_id)
-        form = PlaylistForm(request.POST, instance=playlist)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('get_all_playlists'))
+        return context
 
 
-class DeletePlaylistView(View):
+class UpdatePlaylistView(generic.UpdateView):
+    model = Playlist
+    form_class = PlaylistForm
+    pk_url_kwarg = "playlist_id"
+    template_name = "playlists/update_playlist.html"
 
-    def post(self, request, *args, **kwargs):
-        playlist_id = self.kwargs.get('playlist_id')
-        playlist = get_object_or_404(Playlist, id=playlist_id)
-        playlist.delete()
-        return HttpResponseRedirect(reverse('get_all_playlists'))
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.save()
+        return HttpResponseRedirect('/')
+
+
+class DeletePlaylistView(generic.DeleteView):
+    model = Playlist
+    success_url = "/"
+    pk_url_kwarg = "playlist_id"
 
 
 class AddSongToPlaylistView(View):
@@ -72,7 +72,7 @@ class AddSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.add(song)
-        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
+        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))
 
 
 class RemoveSongToPlaylistView(View):
@@ -83,6 +83,4 @@ class RemoveSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.remove(song)
-        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
-
-
+        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))
