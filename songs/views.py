@@ -64,29 +64,11 @@ class AddAlbumView(generic.CreateView):
         return HttpResponseRedirect('/')
 
 
-class UpdateAlbumView(generic.TemplateView):
-    model = Album
-    template_name = 'songs/update_album.html'
-    pk_url_kwarg = "album_id"
-
-    def get_context_data(self, *args, **kwargs):
-        album_id = self.kwargs.get('album_id')
-        album = get_object_or_404(Album, id=album_id)
-        songs_in_album = Song.objects.filter(album_id=album_id)
-        form = AlbumForm(None, instance=album)
-        context = {
-            "form": form,
-            "album_id": album_id,
-            "songs_in_album": songs_in_album
-        }
-        return context
-
-
-class UpdateAlbumDetailsView(generic.UpdateView):
+class UpdateAlbumView(generic.UpdateView):
     model = Album
     form_class = AlbumForm
-    success_url = 'songs/update_album.html'
     pk_url_kwarg = "album_id"
+    template_name = "songs/update_album.html"
 
     def form_valid(self, form):
         form.save()
@@ -121,11 +103,9 @@ class AddSongToAlbumView(generic.CreateView):
     pk_url_kwarg = "album_id"
 
     def form_valid(self, form):
-        print("dfas")
         album_id = self.kwargs.get("album_id")
         form.instance.type = "Album"
         form.instance.album_id = album_id
-        print(album_id)
         form.save()
         return HttpResponseRedirect('/')
 

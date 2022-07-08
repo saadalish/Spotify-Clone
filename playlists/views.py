@@ -26,9 +26,9 @@ class CreatePlaylistView(generic.CreateView):
         return HttpResponseRedirect(reverse('home'))
 
 
-class UpdatePlaylistView(generic.TemplateView):
+class PlaylistView(generic.TemplateView):
     model = Playlist
-    template_name = 'playlists/update_playlist.html'
+    template_name = 'playlists/view_playlist.html'
     pk_url_kwarg = "playlist_id"
 
     def get_context_data(self, *args, **kwargs):
@@ -46,10 +46,11 @@ class UpdatePlaylistView(generic.TemplateView):
         return context
 
 
-class UpdatePlaylistDetailsView(generic.UpdateView):
+class UpdatePlaylistView(generic.UpdateView):
     model = Playlist
     form_class = PlaylistForm
     pk_url_kwarg = "playlist_id"
+    template_name = "playlists/update_playlist.html"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -71,7 +72,7 @@ class AddSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.add(song)
-        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
+        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))
 
 
 class RemoveSongToPlaylistView(View):
@@ -82,4 +83,4 @@ class RemoveSongToPlaylistView(View):
         playlist = Playlist.objects.get(id=playlist_id)
         song = Song.objects.get(id=song_id)
         playlist.songs.remove(song)
-        return HttpResponseRedirect(reverse('update_playlist', args=[playlist_id]))
+        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))

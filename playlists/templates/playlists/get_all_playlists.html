@@ -7,14 +7,14 @@
   <ul class="list-group list-group-flush">
       {% if playlists %}
             {% for playlist in playlists %}
-               <li class="list-group-item"><a href="{% url 'update_playlist' playlist.id %}">{{ playlist.name }}</a></li>
+               <li class="list-group-item"><a href="{% url 'view_playlist' playlist.id %}">{{ playlist.name }}</a></li>
             {% endfor %}
       {% else %}
           <li class="list-group-item">No Playlist Added yet</li>
       {% endif %}
   </ul>
   <div class="card-body">
-    <a href={% url 'create_playlist' %} class="card-link">Create new Playlist</a>
+    <a href="{% url 'create_playlist' %}" class="card-link">Create new Playlist</a>
   </div>
 </div>
 {% endblock %}
