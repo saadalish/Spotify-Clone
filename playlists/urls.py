@@ -11,6 +11,7 @@ from playlists.views import (
 
 )
 
+
 urlpatterns = [
     path('', GetAllPlaylistsView.as_view(), name='get_all_playlists'),
     path('create', CreatePlaylistView.as_view(), name='create_playlist'),

@@ -1,86 +1,131 @@
-from django.shortcuts import get_object_or_404, HttpResponseRedirect
-from django.urls import reverse
-from django.views import View
-from django.views import generic
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
+from rest_framework import status
+from rest_framework.parsers import JSONParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .forms import PlaylistForm
-from .models import Playlist
+from playlists.models import Playlist
+from playlists.serializers import PlaylistSerializer
 from songs.models import Song
 
 
-class GetAllPlaylistsView(generic.ListView):
-    template_name = 'playlists/get_all_playlists.html'
-    context_object_name = 'playlists'
+class GetAllPlaylistsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Playlist.objects.filter(user=self.request.user)
-
-
-class CreatePlaylistView(generic.CreateView):
-    template_name = 'playlists/create_playlist.html'
-    form_class = PlaylistForm
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.save()
-        return HttpResponseRedirect(reverse('home'))
+    def get(self, request):
+        playlists = Playlist.objects.filter(user=self.request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return JsonResponse(serializer.data)
 
 
-class PlaylistView(generic.TemplateView):
-    model = Playlist
-    template_name = 'playlists/view_playlist.html'
-    pk_url_kwarg = "playlist_id"
+class CreatePlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_context_data(self, *args, **kwargs):
-        playlist_id = self.kwargs.get('playlist_id')
-        playlist = get_object_or_404(Playlist, id=playlist_id)
-        form = PlaylistForm(None, instance=playlist)
-        songs_in_playlist = playlist.songs.values_list('id', flat=True)
-        recommended_songs = Song.objects.exclude(id__in=songs_in_playlist)[:10]
-        context = {
-            "form": form,
-            "playlist": playlist,
-            "recommended_songs": recommended_songs,
-            "playlist_songs": playlist.songs.all()
-        }
-        return context
-
-
-class UpdatePlaylistView(generic.UpdateView):
-    model = Playlist
-    form_class = PlaylistForm
-    pk_url_kwarg = "playlist_id"
-    template_name = "playlists/update_playlist.html"
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        form.save()
-        return HttpResponseRedirect('/')
+    def post(self, request):
+        if request.data:
+            serializer = PlaylistSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=self.request.user)
+                return Response({
+                    "status": True,
+                    "message": request.data
+                })
+            return Response({
+                "status": False,
+                "message": "Invalid Input",
+                "Error": serializer.errors
+            })
+        else:
+            raise ValueError("Empty playlist object in request. Create API needs a json object")
 
 
-class DeletePlaylistView(generic.DeleteView):
-    model = Playlist
-    success_url = "/"
-    pk_url_kwarg = "playlist_id"
+class PlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, playlist_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            serializer = PlaylistSerializer(playlist)
+            return JsonResponse(serializer.data)
+        except ObjectDoesNotExist:
+            return Response({
+                "status": False,
+                "message": f"No Playlist exist with id {playlist_id}"
+            })
 
 
-class AddSongToPlaylistView(View):
+class UpdatePlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        playlist_id = self.kwargs.get('playlist_id')
-        song_id = self.kwargs.get('song_id')
-        playlist = Playlist.objects.get(id=playlist_id)
-        song = Song.objects.get(id=song_id)
-        playlist.songs.add(song)
-        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))
+    def put(self, request, playlist_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            request_data = JSONParser().parse(request)
+            serializer = PlaylistSerializer(playlist, data=request_data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data)
+            return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({
+                "status": False,
+                "message": f"No Playlist exist with id {playlist_id}"
+            })
 
 
-class RemoveSongToPlaylistView(View):
+class DeletePlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
-        playlist_id = self.kwargs.get('playlist_id')
-        song_id = self.kwargs.get('song_id')
-        playlist = Playlist.objects.get(id=playlist_id)
-        song = Song.objects.get(id=song_id)
-        playlist.songs.remove(song)
-        return HttpResponseRedirect(reverse('view_playlist', args=[playlist_id]))
+    def delete(self, request, playlist_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            playlist.delete()
+            return Response({
+                "status": True,
+                "message": "Playlist deleted successfully"
+            })
+        except ObjectDoesNotExist:
+            return Response({
+                "status": False,
+                "message": f"No Playlist exist with id {playlist_id}"
+            })
+
+
+class AddSongToPlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, song_id, playlist_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            song = Song.objects.get(id=song_id)
+            playlist.songs.add(song)
+            return Response({
+                "status": True,
+                "message": "Song added to the Playlist successfully"
+            })
+        except ObjectDoesNotExist:
+            return Response({
+                "status": False,
+                "message": f"No Playlist/Song exist with id {playlist_id}"
+            })
+
+
+class RemoveSongToPlaylistView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, song_id, playlist_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            song = Song.objects.get(id=song_id)
+            playlist.songs.remove(song)
+            return Response({
+                "status": True,
+                "message": "Song removed from the Playlist successfully"
+            })
+        except ObjectDoesNotExist:
+            return Response({
+                "status": False,
+                "message": f"No Playlist/Song exist with id {playlist_id}"
+            })

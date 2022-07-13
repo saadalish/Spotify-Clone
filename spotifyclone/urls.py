@@ -9,5 +9,5 @@ urlpatterns = [
     path('', include('home.urls')),
     path('', include('users.urls')),
     path('playlists/', include('playlists.urls')),
-    path('songs/', include('songs.urls'))
+    path('songs/', include('songs.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
