@@ -12,14 +12,10 @@ from songs.models import Song
 class PlaylistView(APIView):
     permission_classes = [IsAuthenticated]
 
-    # list/retrieve
-    def get(self, request, pk=None):
-        if pk:
-            playlist = get_object_or_404(Playlist, id=pk)
-            serializer = PlaylistSerializer(playlist)
-        else:
-            playlists = Playlist.objects.filter(user=self.request.user)
-            serializer = PlaylistSerializer(playlists, many=True)
+    # list
+    def get(self, request):
+        playlists = Playlist.objects.filter(user=self.request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
         return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
 
     # create
@@ -28,6 +24,15 @@ class PlaylistView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=self.request.user)
             return JsonResponse(status=status.HTTP_201_CREATED, data=serializer.data)
+
+
+class PlaylistDetail(APIView):
+
+    # retrieve
+    def get(self, request, pk):
+        playlist = get_object_or_404(Playlist, id=pk)
+        serializer = PlaylistSerializer(playlist)
+        return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
 
     # update
     def put(self, request, pk):
