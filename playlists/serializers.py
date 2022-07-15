@@ -11,4 +11,3 @@ class PlaylistSerializer(serializers.ModelSerializer):
         model = Playlist
         fields = ['id', 'name', 'songs']
 
-
