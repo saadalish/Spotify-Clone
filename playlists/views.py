@@ -29,7 +29,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         playlist.songs.add(song)
         return JsonResponse(
             status=status.HTTP_201_CREATED,
-            data="Song added to the Playlist successfully",
             safe=False
         )
 
@@ -43,7 +42,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.remove(song)
         return JsonResponse(
-            status=status.HTTP_201_CREATED,
-            data="Song removed from the Playlist successfully",
+            status=status.HTTP_204_NO_CONTENT,
             safe=False
         )
