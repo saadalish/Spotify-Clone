@@ -6,3 +6,4 @@ class SongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
         fields = ['id', 'title', 'type', 'album', 'publishing_house', 'file', 'artists']
+
