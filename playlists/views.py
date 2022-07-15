@@ -15,18 +15,29 @@ class PlaylistViewSet(viewsets.ViewSet):
     def list(self, request):
         playlists = Playlist.objects.filter(user=self.request.user)
         serializer = PlaylistSerializer(playlists, many=True)
-        return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
+        return JsonResponse(
+            status=status.HTTP_200_OK,
+            data=serializer.data,
+            safe=False
+        )
 
     def create(self, request):
         serializer = PlaylistSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=self.request.user)
-        return JsonResponse(status=status.HTTP_201_CREATED, data=serializer.data)
+        return JsonResponse(
+            status=status.HTTP_201_CREATED,
+            data=serializer.data
+        )
 
     def retrieve(self, request, pk):
         playlist = get_object_or_404(Playlist, id=pk)
         serializer = PlaylistSerializer(playlist)
-        return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
+        return JsonResponse(
+            status=status.HTTP_200_OK,
+            data=serializer.data,
+            safe=False
+        )
 
     def update(self, request, pk=None):
         playlist = get_object_or_404(Playlist, id=pk)
@@ -45,7 +56,11 @@ class PlaylistViewSet(viewsets.ViewSet):
     def destroy(self, request, pk):
         playlist = get_object_or_404(Playlist, id=pk)
         playlist.delete()
-        return JsonResponse(status=status.HTTP_200_OK, data="Playlist deleted successfully", safe=False)
+        return JsonResponse(
+            status=status.HTTP_204_NO_CONTENT,
+            data="Playlist deleted successfully",
+            safe=False
+        )
 
 
 class AddSongToPlaylistView(APIView):
@@ -55,7 +70,10 @@ class AddSongToPlaylistView(APIView):
         playlist = get_object_or_404(Playlist, id=playlist_id)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
-        return JsonResponse(status=status.HTTP_201_CREATED, data="Song added to the Playlist successfully", safe=False)
+        return JsonResponse(
+            status=status.HTTP_201_CREATED,
+            data="Song added to the Playlist successfully",
+            safe=False)
 
 
 class RemoveSongFromPlaylistView(APIView):
@@ -65,4 +83,8 @@ class RemoveSongFromPlaylistView(APIView):
         playlist = get_object_or_404(Playlist, id=playlist_id)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.remove(song)
-        return JsonResponse(status=status.HTTP_200_OK, data="Song removed from the Playlist successfully", safe=False)
+        return JsonResponse(
+            status=status.HTTP_204_NO_CONTENT,
+            data="Song removed from the Playlist successfully",
+            safe=False
+        )
