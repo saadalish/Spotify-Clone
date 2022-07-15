@@ -1,68 +1,49 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
+
 
 from playlists.models import Playlist
 from playlists.serializers import PlaylistSerializer
 from songs.models import Song
 
 
-class PlaylistViewSet(viewsets.ViewSet):
+class PlaylistViewSet(viewsets.ModelViewSet):
+    queryset = Playlist.objects.all()
+    serializer_class = PlaylistSerializer
     permission_classes = [IsAuthenticated]
 
-    def list(self, request):
-        playlists = Playlist.objects.filter(user=self.request.user)
-        serializer = PlaylistSerializer(playlists, many=True)
-        return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-    def create(self, request):
-        serializer = PlaylistSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(user=self.request.user)
-            return JsonResponse(status=status.HTTP_201_CREATED, data=serializer.data)
-
-    def retrieve(self, request, pk):
+    @action(
+        detail=True,
+        url_path=r'add_song/(?P<song_id>[^/.]+)',
+        methods=['post']
+    )
+    def add_song_to_playlist(self, request, pk, song_id):
         playlist = get_object_or_404(Playlist, id=pk)
-        serializer = PlaylistSerializer(playlist)
-        return JsonResponse(status=status.HTTP_200_OK, data=serializer.data, safe=False)
-
-    def update(self, request, pk=None):
-        playlist = get_object_or_404(Playlist, id=pk)
-        serializer = PlaylistSerializer(playlist, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data)
-
-    def partial_update(self, request, pk=None):
-        playlist = get_object_or_404(Playlist, id=pk)
-        serializer = PlaylistSerializer(playlist, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data)
-
-    def destroy(self, request, pk):
-        playlist = get_object_or_404(Playlist, id=pk)
-        playlist.delete()
-        return JsonResponse(status=status.HTTP_200_OK, data="Playlist deleted successfully", safe=False)
-
-
-class AddSongToPlaylistView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, song_id, playlist_id):
-        playlist = get_object_or_404(Playlist, id=playlist_id)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.add(song)
-        return JsonResponse(status=status.HTTP_201_CREATED, data="Song added to the Playlist successfully", safe=False)
+        return JsonResponse(
+            status=status.HTTP_201_CREATED,
+            data="Song added to the Playlist successfully",
+            safe=False
+        )
 
-
-class RemoveSongFromPlaylistView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, song_id, playlist_id):
-        playlist = get_object_or_404(Playlist, id=playlist_id)
+    @action(
+        detail=True,
+        url_path=r'remove_song/(?P<song_id>[^/.]+)',
+        methods=['post']
+    )
+    def remove_song_from_playlist(self, request, pk, song_id):
+        playlist = get_object_or_404(Playlist, id=pk)
         song = get_object_or_404(Song, id=song_id)
         playlist.songs.remove(song)
-        return JsonResponse(status=status.HTTP_200_OK, data="Song removed from the Playlist successfully", safe=False)
+        return JsonResponse(
+            status=status.HTTP_201_CREATED,
+            data="Song removed from the Playlist successfully",
+            safe=False
+        )
