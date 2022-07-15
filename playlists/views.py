@@ -19,9 +19,9 @@ class PlaylistViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = PlaylistSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(user=self.request.user)
-            return JsonResponse(status=status.HTTP_201_CREATED, data=serializer.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=self.request.user)
+        return JsonResponse(status=status.HTTP_201_CREATED, data=serializer.data)
 
     def retrieve(self, request, pk):
         playlist = get_object_or_404(Playlist, id=pk)
@@ -31,16 +31,16 @@ class PlaylistViewSet(viewsets.ViewSet):
     def update(self, request, pk=None):
         playlist = get_object_or_404(Playlist, id=pk)
         serializer = PlaylistSerializer(playlist, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return JsonResponse(serializer.data)
 
     def partial_update(self, request, pk=None):
         playlist = get_object_or_404(Playlist, id=pk)
         serializer = PlaylistSerializer(playlist, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return JsonResponse(serializer.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return JsonResponse(serializer.data)
 
     def destroy(self, request, pk):
         playlist = get_object_or_404(Playlist, id=pk)
