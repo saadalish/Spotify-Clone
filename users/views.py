@@ -1,9 +1,8 @@
-from django.views import generic
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from .serializers import RegisterSerializer
 
-from .forms import SignUpForm
 
-
-class SignupView(generic.CreateView):
-    form_class = SignUpForm
-    success_url = '/'
-    template_name = 'users/signup.html'
+class RegisterUserAPIView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
