@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 from users.models import User
+from .tasks import send_email_on_register
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -46,4 +47,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data.get('password'))
         user.save()
+        send_email_on_register.delay()
         return user
