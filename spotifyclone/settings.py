@@ -175,7 +175,16 @@ LOGGING = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '2/day',
+        'user': '3/day'
+    }
+
 }
 
 # CELERY STUFF
@@ -189,6 +198,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'saad.ali@cogentlabs.co'
+EMAIL_HOST_USER = 'saad.ali@cogentlabs.c'
 EMAIL_HOST_PASSWORD = 'cywviwidezpkivbv'
 EMAIL_PORT = 587

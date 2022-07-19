@@ -29,5 +29,3 @@ class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
 
-
-
