@@ -184,11 +184,11 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'Asia/lahore'
 
 # MAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'Saad Ali'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'saad.ali@cogentlabs.co'
+EMAIL_HOST_PASSWORD = 'cywviwidezpkivbv'
 EMAIL_PORT = 587
