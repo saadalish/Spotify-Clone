@@ -18,10 +18,11 @@ class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class AlbumList(generics.ListCreateAPIView):
+class AlbumList(generics.ListAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
+    filterset_fields = ['id']
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
