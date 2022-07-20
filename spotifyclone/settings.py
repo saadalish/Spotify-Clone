@@ -14,7 +14,6 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # import users.models
-import rest_framework.throttling
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -194,6 +193,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = 'saad.ali@cogentlabs.c'
+EMAIL_HOST_USER = 'saad.ali@cogentlabs.co'
 EMAIL_HOST_PASSWORD = 'cywviwidezpkivbv'
 EMAIL_PORT = 587
