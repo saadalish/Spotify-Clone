@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Album
 from songs.models import Song
 from .serializers import AlbumSerializer, SongSerializer
+from .throttling import AlbumListCreateRateThrottle
 
 
 class SongList(generics.ListCreateAPIView):
@@ -22,6 +23,7 @@ class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [AlbumListCreateRateThrottle]
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):

@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # import users.models
+import rest_framework.throttling
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -177,13 +178,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '2/day',
-        'user': '3/day'
-    }
+        'songs.throttling.AlbumListCreateRateThrottle'
+    ]
 
 }
 
