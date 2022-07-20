@@ -22,7 +22,7 @@ class SongDetail(generics.RetrieveUpdateDestroyAPIView):
 class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     pagination_class = PageNumberPagination
 
 
