@@ -9,7 +9,8 @@ from .serializers import AlbumSerializer, SongSerializer
 class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
     serializer_class = SongSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+    filterset_fields = ['title']
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -22,6 +23,7 @@ class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
+    filterset_fields = ['id']
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
