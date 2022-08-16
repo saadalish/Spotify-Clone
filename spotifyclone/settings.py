@@ -91,15 +91,13 @@ WSGI_APPLICATION = 'spotifyclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'myspotifydb',
+        'NAME': 'postgres',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -143,6 +141,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 #     os.path.join(BASE_DIR, 'static'),
 # )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -175,6 +180,7 @@ LOGGING = {
         },
     },
 }
+
 
 # MAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
