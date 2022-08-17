@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:14-alpine
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    environment:
+      - POSTGRES_DB=myspotifydb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+
+  spotify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/code
+    environment:
+      - POSTGRES_NAME=myspotifydb
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    depends_on:
+      - db
+volumes:
+   postgresql-data:
+     driver: local
+
+

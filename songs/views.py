@@ -13,12 +13,9 @@ class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
     serializer_class = SongSerializer
     permission_classes = [IsAuthenticated]
-<<<<<<< HEAD
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title']
-=======
     pagination_class = LimitOffsetPagination
->>>>>>> main
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
