@@ -23,7 +23,7 @@ class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
-    filterset_fields = ['id']
+    filterset_fields = ['name']
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
