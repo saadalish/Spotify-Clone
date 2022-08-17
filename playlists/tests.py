@@ -1,17 +1,21 @@
 from rest_framework import status
 
+from core.tests import AccountTests
 from .models import Playlist
 from songs.models import Song
-from songs.tests import SongTests
 from users.models import User
 
 
-class PlaylistTests(SongTests):
+class PlaylistTests(AccountTests):
 
     def setUp(self):
         super(PlaylistTests, self).setUp()
         user = User.objects.get(username="testing_user")
         Playlist.objects.create(name="playlist", user=user)
+        Song.objects.create(
+            title='title',
+            type='Album'
+        )
 
     def test_get_all_playlists(self):
         response = self.client.get(
