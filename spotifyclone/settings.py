@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-&c-=g92vp$s$)fum)!u7@0kpsj@se6z##-_vbcq28bj^hh5t++
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -92,15 +92,13 @@ WSGI_APPLICATION = 'spotifyclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'myspotifydb',
+        'NAME': 'postgres',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
