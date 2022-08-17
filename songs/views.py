@@ -1,5 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 
 from .models import Album
 from songs.models import Song
@@ -10,6 +11,7 @@ class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
     serializer_class = SongSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = LimitOffsetPagination
 
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -22,6 +24,7 @@ class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 
 
 class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
