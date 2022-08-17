@@ -5,6 +5,7 @@ from rest_framework.pagination import LimitOffsetPagination, PageNumberPaginatio
 from .models import Album
 from songs.models import Song
 from .serializers import AlbumSerializer, SongSerializer
+from .throttling import AlbumListCreateRateThrottle
 
 
 class SongList(generics.ListCreateAPIView):
@@ -24,6 +25,7 @@ class AlbumList(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [AlbumListCreateRateThrottle]
     pagination_class = PageNumberPagination
 
 
@@ -31,6 +33,4 @@ class AlbumDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
     permission_classes = [IsAuthenticated]
-
-
 
