@@ -8,9 +8,9 @@ class AccountTests(APITestCase):
 
     def setUp(self):
         user = User.objects.create_user(
-            username='saadsh18',
-            email='test@gmail.com',
-            password='@saadsh18',
+            username='testing_user',
+            email='user_testing@gmail.com',
+            password='@test123',
             is_artist=True
         )
         token = Token.objects.create(user=user)

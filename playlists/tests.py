@@ -10,7 +10,7 @@ class PlaylistTests(SongTests):
 
     def setUp(self):
         super(PlaylistTests, self).setUp()
-        user = User.objects.get(username="saadsh18")
+        user = User.objects.get(username="testing_user")
         Playlist.objects.create(name="playlist", user=user)
 
     def test_get_all_playlists(self):

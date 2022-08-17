@@ -11,8 +11,7 @@ class SongTests(AccountTests):
         super(SongTests, self).setUp()
         Song.objects.create(
             title='title',
-            type='Album',
-            file='file.mp3'
+            type='Album'
         )
 
     def test_get_all_songs(self):
@@ -23,22 +22,21 @@ class SongTests(AccountTests):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_create_song(self):
-        artist = User.objects.get(username="saadsh18")
+        artist = User.objects.get(username="testing_user")
         response = self.client.post(
             path='/songs/',
             data={
                 "title": 'title_testing',
                 "type": 'Single',
-                "file": 'abc.mp3',
                 "artists": [
-                    artist
+                    artist.id
                 ]
 
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Song.objects.count(), 1)
+        self.assertEqual(Song.objects.count(), 2)
         self.assertEqual(Song.objects.last().title, 'title_testing')
 
     def test_update_song(self):
